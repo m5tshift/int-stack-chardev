@@ -3,6 +3,7 @@ import sys
 import fcntl
 import struct
 import array
+import errno
 
 DEVICE_PATH = "/dev/int_stack"
 
@@ -12,15 +13,20 @@ IOCTL_GET_COUNT = 0x80046B02
 
 def main():
     if len(sys.argv) < 2:
+        print("Usage: python3 kernel_stack.py <command> [args]")
         return
 
     cmd = sys.argv[1]
 
     try:
         fd = os.open(DEVICE_PATH, os.O_RDWR)
-    except Exception as e:
-        print(f"ERROR: Could not open device ({e})")
-        sys.exit(1)
+    except OSError as e:
+        if e.errno == errno.ENOENT:
+            print("ERROR: USB key is not inserted")
+            sys.exit(1)
+        else:
+            print(f"ERROR: Could not open device ({e})")
+            sys.exit(1)
 
     try:
         if cmd == "set-size":

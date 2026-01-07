@@ -11,4 +11,7 @@
 
 #define DEVICE_NAME "int_stack"
 
+#define USB_VID 0x058f
+#define USB_PID 0x6387
+
 #endif
